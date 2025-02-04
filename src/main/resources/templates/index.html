@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 40px;
+            background-color: #f4f4f4;
+        }
+        h2 {
+            color: #333;
+        }
+        input {
+            padding: 10px;
+            width: 300px;
+            margin: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        img {
+            margin-top: 20px;
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+<h2>AI Image Generator</h2>
+<input type="text" id="prompt" placeholder="Enter your prompt..." />
+<button onclick="generateImage()">Generate Image</button>
+
+<div id="imageContainer"></div>
+
+<script>
+    async function generateImage() {
+        const prompt = document.getElementById("prompt").value;
+        if (!prompt) {
+            alert("Please enter a prompt!");
+            return;
+        }
+
+        const response = await fetch("http://localhost:8080/api/images/generate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ prompt: prompt })
+        });
+
+        const data = await response.json();
+
+        if (data && data.data && data.data.length > 0) {
+            const imageUrl = data.data[0].url;
+            document.getElementById("imageContainer").innerHTML = `<img src="${imageUrl}" alt="Generated Image" />`;
+        } else {
+            alert("Failed to generate image.");
+        }
+    }
+</script>
+
+</body>
+</html>
